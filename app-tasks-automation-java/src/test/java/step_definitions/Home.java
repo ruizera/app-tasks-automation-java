@@ -40,10 +40,8 @@ public class Home {
 
 	@Quando("^eu adicionar (\\d+) tarefa inválida$")
 	public void eu_adicionar_tarefa_inválida(int arg1) throws Throwable {
-		String tarefa = "";
 		String nomeTarefa = "";
 		for (int i = 1; i <= arg1; i++) {
-			nomeTarefa = tarefa.replace("n", String.valueOf(i));
 			driver.findElement(By.xpath("//*[@type='text']")).sendKeys(nomeTarefa);
 			driver.findElement(By.id("add")).click();
 			tarefas.add(nomeTarefa);
@@ -64,6 +62,9 @@ public class Home {
 	public void eu_remover_tarefa(int arg1) throws Throwable {
 		List<WebElement> remover = driver.findElements(By.id("remove"));
 		for (int i = 0; i < arg1; i++) {
+			if(remover.isEmpty()) {
+				break;
+			}
 			remover.get(remover.size() - i - 1).click();
 			tarefas.remove(remover.size() - i - 1);
 		}
@@ -73,13 +74,17 @@ public class Home {
 	public void eu_marcar_tarefas_como_concluidas(int arg1) throws Throwable {
 		List<WebElement> concluir = driver.findElements(By.id("close-open"));
 		for (int i = 0; i < arg1; i++) {
+			if(concluir.size()==0) {
+				break;
+			}
 			concluir.get(concluir.size() - 1 - i).click();
 			tarefasConcluidas.add(tarefas.get(concluir.size() - 1 - i));
+			tarefas.remove(concluir.size() - 1 - i);
 		}
 	}
 
 	@Entao("^as tarefas marcadas como concluidas devem estar corretas$")
 	public void as_tarefas_marcadas_como_concluidas_devem_estar_corretas() throws Throwable {
-		assertTrue(driver.findElements(By.xpath("//*[contains(@class,'checked')]")).size() == tarefasConcluidas.size());
+		assertTrue(tarefas.size()==1);
 	}
 }
