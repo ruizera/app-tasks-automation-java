@@ -85,6 +85,6 @@ public class Home {
 
 	@Entao("^as tarefas marcadas como concluidas devem estar corretas$")
 	public void as_tarefas_marcadas_como_concluidas_devem_estar_corretas() throws Throwable {
-		assertTrue(tarefas.size()==1);
+		assertTrue(driver.findElements(By.xpath("//*[contains(@class,'checked')]")).size() == tarefasConcluidas.size());
 	}
 }

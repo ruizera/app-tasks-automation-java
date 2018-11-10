@@ -7,7 +7,7 @@ Funcionalidade: Tarefas
   Para organizar e visualizar a minha execução das mesmas
 
 Contexto: Acessar o site
-  Dado que eu esteja na home do site
+  Dado que eu esteja logado
 
 @positivo @regressao @smokeTest 
 Esquema do Cenário: Validar adição de tarefa

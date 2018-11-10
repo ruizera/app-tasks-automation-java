@@ -1,5 +1,6 @@
 package step_definitions;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 import cucumber.api.java.es.Dado;
@@ -11,8 +12,10 @@ public class Comum {
 	WebDriver driver = wdm.getDriver();
 	ConfigFileReader cfr = new ConfigFileReader();
 	
-	@Dado("^que eu esteja na home do site$")
-	public void que_eu_esteja_na_home_do_site() throws Throwable {
+	@Dado("^que eu esteja logado$")
+	public void que_eu_esteja_logado() throws Throwable {
 		driver.get(cfr.getApplicationUrl());
+		driver.findElement(By.xpath("//*[@placeholder='Digite seu RA']")).sendKeys(cfr.getRa());
+		driver.findElement(By.id("add")).click();
 	}
 }

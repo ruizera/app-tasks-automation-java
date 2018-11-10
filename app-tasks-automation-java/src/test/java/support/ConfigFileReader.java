@@ -71,4 +71,12 @@ public class ConfigFileReader {
 			return Boolean.valueOf(windowSize);
 		return true;
 	}
+
+	public String getRa() {
+		String ra = properties.getProperty("RA");
+		if (ra != null)
+			return ra;
+		else
+			throw new RuntimeException("RA não especificado");
+	}
 }
