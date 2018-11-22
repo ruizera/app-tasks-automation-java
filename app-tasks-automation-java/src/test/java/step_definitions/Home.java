@@ -6,10 +6,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.it.Quando;
 import cucumber.api.java.pt.Entao;
 import support.WebDriverManager;
@@ -20,6 +24,21 @@ public class Home {
 
 	WebDriverManager wdm = new WebDriverManager();
 	WebDriver driver = wdm.getDriver();
+	
+	@Before
+	public void setUp() {
+		JOptionPane.showMessageDialog(null, "a");
+		if(driver.findElements(By.xpath("//*[@id='tasks']/div")).size()>0) {
+			List<WebElement> remover = driver.findElements(By.id("remove"));
+			for (int i = 0; i <remover.size(); i++) {
+				if(remover.isEmpty()) {
+					break;
+				}
+				remover.get(remover.size() - i - 1).click();
+				tarefas.remove(remover.size() - i - 1);
+			}
+		}
+	}
 
 	@Quando("^eu adicionar (\\d+) tarefa valida$")
 	public void eu_adicionar_tarefa_valida(int arg1) throws Throwable {
@@ -86,5 +105,23 @@ public class Home {
 	@Entao("^as tarefas marcadas como concluidas devem estar corretas$")
 	public void as_tarefas_marcadas_como_concluidas_devem_estar_corretas() throws Throwable {
 		assertTrue(driver.findElements(By.xpath("//*[contains(@class,'checked')]")).size() == tarefasConcluidas.size());
+	}
+	
+	@After
+	public void cleanUp() {
+		if(driver.findElements(By.xpath("//*[@id='tasks']/div")).size()>0) {
+			
+			List<WebElement> remover = driver.findElements(By.id("remove"));
+			int qtdTarefas = remover.size();
+			for (int i = 0; i <qtdTarefas; i++) {
+				if(remover.isEmpty()) {
+					break;
+				}
+				System.out.println(i);
+				
+				remover.get(remover.size() - i - 1).click();
+				tarefas.remove(remover.size() - i - 1);
+			}
+		}
 	}
 }
