@@ -6,16 +6,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.it.Quando;
 import cucumber.api.java.pt.Entao;
+import cucumber.api.java.pt.Quando;
 import support.WebDriverManager;
 
 public class Home {
@@ -24,21 +22,7 @@ public class Home {
 
 	WebDriverManager wdm = new WebDriverManager();
 	WebDriver driver = wdm.getDriver();
-	
-	@Before
-	public void setUp() {
-		JOptionPane.showMessageDialog(null, "a");
-		if(driver.findElements(By.xpath("//*[@id='tasks']/div")).size()>0) {
-			List<WebElement> remover = driver.findElements(By.id("remove"));
-			for (int i = 0; i <remover.size(); i++) {
-				if(remover.isEmpty()) {
-					break;
-				}
-				remover.get(remover.size() - i - 1).click();
-				tarefas.remove(remover.size() - i - 1);
-			}
-		}
-	}
+	WebDriverWait wait = new WebDriverWait(driver, 4);
 
 	@Quando("^eu adicionar (\\d+) tarefa valida$")
 	public void eu_adicionar_tarefa_valida(int arg1) throws Throwable {
@@ -46,7 +30,7 @@ public class Home {
 		String nomeTarefa = "";
 		for (int i = 1; i <= arg1; i++) {
 			nomeTarefa = tarefa.replace("n", String.valueOf(i));
-			driver.findElement(By.xpath("//*[@type='text']")).sendKeys(nomeTarefa);
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@placeholder='Nova tarefa...']"))).sendKeys(nomeTarefa);
 			driver.findElement(By.id("add")).click();
 			tarefas.add(nomeTarefa);
 		}
@@ -61,7 +45,7 @@ public class Home {
 	public void eu_adicionar_tarefa_inválida(int arg1) throws Throwable {
 		String nomeTarefa = "";
 		for (int i = 1; i <= arg1; i++) {
-			driver.findElement(By.xpath("//*[@type='text']")).sendKeys(nomeTarefa);
+			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@placeholder='Nova tarefa...']"))).sendKeys(nomeTarefa);
 			driver.findElement(By.id("add")).click();
 			tarefas.add(nomeTarefa);
 		}
@@ -93,7 +77,7 @@ public class Home {
 	public void eu_marcar_tarefas_como_concluidas(int arg1) throws Throwable {
 		List<WebElement> concluir = driver.findElements(By.id("close-open"));
 		for (int i = 0; i < arg1; i++) {
-			if(concluir.size()==0) {
+			if(tarefas.size()==0) {
 				break;
 			}
 			concluir.get(concluir.size() - 1 - i).click();
@@ -107,21 +91,4 @@ public class Home {
 		assertTrue(driver.findElements(By.xpath("//*[contains(@class,'checked')]")).size() == tarefasConcluidas.size());
 	}
 	
-	@After
-	public void cleanUp() {
-		if(driver.findElements(By.xpath("//*[@id='tasks']/div")).size()>0) {
-			
-			List<WebElement> remover = driver.findElements(By.id("remove"));
-			int qtdTarefas = remover.size();
-			for (int i = 0; i <qtdTarefas; i++) {
-				if(remover.isEmpty()) {
-					break;
-				}
-				System.out.println(i);
-				
-				remover.get(remover.size() - i - 1).click();
-				tarefas.remove(remover.size() - i - 1);
-			}
-		}
-	}
 }
