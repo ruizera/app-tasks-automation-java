@@ -31,6 +31,7 @@ public class Home {
 		for (int i = 1; i <= arg1; i++) {
 			nomeTarefa = tarefa.replace("n", String.valueOf(i));
 			wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@placeholder='Nova tarefa...']"))).sendKeys(nomeTarefa);
+			wait.until(ExpectedConditions.elementToBeClickable(By.id("data"))).sendKeys("01012019");
 			driver.findElement(By.id("add")).click();
 			tarefas.add(nomeTarefa);
 		}
